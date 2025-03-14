@@ -46,15 +46,14 @@ class PositionForm(ModelForm):
 class ContractForm(ModelForm):
     class Meta:
         model = Contract
-        fields = '__all__'
-    fields = ['number', 'date_start', 'date_end', 'contract_type', 'organization']
-    widgets = {
-        'number': forms.TextInput(attrs={'class': 'form-control'}),
-        'date_start': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-        'date_end': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-        'contract_type': forms.Select(attrs={'class': 'form-control'}),
-        'organization': forms.Select(attrs={'class': 'form-control'})
-    }
+        fields = ['number', 'date_start', 'date_end', 'contract_type', 'organization']
+        widgets = {
+            'number': forms.TextInput(attrs={'class': 'form-control'}),
+            'date_start': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'date_end': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'contract_type': forms.Select(attrs={'class': 'form-control'}),
+            'organization': forms.Select(attrs={'class': 'form-control'})
+        }
 
 # Форма для File
 class FileForm(ModelForm):

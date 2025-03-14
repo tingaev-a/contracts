@@ -1,12 +1,12 @@
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404, redirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.views.generic import View
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
+from main.models import Contract
 from .forms import OrganizationForm, FileForm
-from .models import Contract
 from .models import ContractType, Organization
 
 
@@ -42,30 +42,38 @@ class ContractTypeDeleteView(DeleteView):
     template_name = 'contract-type/contract-type-delete.html'
     success_url = reverse_lazy('contract-type-list')
 
-class ContractTypeView(View):
+class ContractTypeAPIView(APIView):
     def get(self, request):
         try:
-            # Получаем уникальные типы договоров
-            types = Contract.objects.values('contract_type').distinct()
+            # Получаем все активные типы договоров
+            types = ContractType.objects.filter(is_active=True)
 
-            # Проверяем, есть ли хотя бы один тип
-            if not types.exists():
-                return JsonResponse({'error': 'Типы договоров не найдены'}, status=404)
-
-            # Форматируем ответ в более удобном виде
+            # Форматируем ответ
             formatted_types = [
-                {'id': i, 'type': type['contract_type']}
-                for i, type in enumerate(types, start=1)
+                {'id': type.id, 'name': type.name}
+                for type in types
             ]
 
-            return JsonResponse({'types': formatted_types}, safe=False)
-
-        except ObjectDoesNotExist:
-            return JsonResponse({'error': 'Типы договоров не найдены'}, status=404)
+            return Response({'types': formatted_types})
 
         except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
+            return Response({'error': str(e)}, status=500)
 
+    def contract_create_view(request):
+        if request.method == 'POST':
+            form = ContractForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('contract-list')
+        else:
+            form = ContractForm()
+
+        contract_types = ContractType.objects.filter(is_active=True)
+
+        return render(request, 'contract-create.html', {
+            'form': form,
+            'contract_types': contract_types
+        })
 
 # Views для Organization
 class OrganizationListView(ListView):
