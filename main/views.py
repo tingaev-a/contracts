@@ -1,12 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from main.models import Contract
-from .forms import OrganizationForm, FileForm
+from .forms import OrganizationForm, FileForm, ContractForm
 from .models import ContractType, Organization
 
 
