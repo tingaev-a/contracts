@@ -1,0 +1,23 @@
+{% extends 'organization/organization-base.html' %}
+
+{% block title %}Список организаций{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Список организаций</h1>
+
+<div class="card">
+  <div class="card-body">
+    <ul class="list-group list-group-flush">
+      {% for organization in organizations %}
+      <li class="list-group-item">
+        <a href="{% url 'organization-detail' organization.id %}">{{ organization.name }}</a>
+      </li>
+      {% empty %}
+      <li class="list-group-item">Организаций не найдено</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<a href="{% url 'organization-create' %}" class="btn btn-primary mt-3">Добавить организацию</a>
+{% endblock %}

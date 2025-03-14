@@ -16,16 +16,20 @@ class ContractTypeForm(ModelForm):
     }
 
 # Форма для Organization
-class OrganizationForm(ModelForm):
+class OrganizationForm(forms.ModelForm):
     class Meta:
         model = Organization
-        fields = '__all__'
-    fields = ['name', 'inn', 'kpp']
-    widgets = {
-        'name': forms.TextInput(attrs={'class': 'form-control'}),
-        'inn': forms.TextInput(attrs={'class': 'form-control'}),
-        'kpp': forms.TextInput(attrs={'class': 'form-control'})
-    }
+        fields = [
+            'name', 'inn'
+        ]
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'inn': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+class OrganizationUpdateForm(OrganizationForm):
+    class Meta(OrganizationForm.Meta):
+        exclude = ['registration_date']  # Исключаем поле даты регистрации
 
 # Форма для Position
 class PositionForm(ModelForm):
@@ -73,3 +77,5 @@ class FileForm(ModelForm):
                 raise forms.ValidationError("Файл слишком большой. Максимальный размер: 10MB")
 
         return cleaned_data
+
+

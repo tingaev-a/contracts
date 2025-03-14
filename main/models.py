@@ -1,8 +1,6 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import RegexValidator
-from django.contrib.auth.models import User
-
+from django.db import models
+from django import forms
 
 class User(AbstractUser):
     """
@@ -44,10 +42,49 @@ class Organization(models.Model):
     """
     name = models.CharField(max_length=200, verbose_name="Название")
     inn = models.CharField(max_length=12, verbose_name="ИНН")
-    kpp = models.CharField(max_length=9, verbose_name="КПП")
-
     def __str__(self):
         return self.name
+
+class OrganizationForm(forms.ModelForm):
+    class Meta:
+        model = Organization
+        fields = ['name', 'inn']
+
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Введите название организации'}),
+            'inn': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Введите ИНН', 'maxlength': '12'}),
+        }
+
+        labels = {
+            'name': 'Название организации',
+            'inn': 'ИНН',
+        }
+
+        help_texts = {
+            'name': 'Укажите полное наименование организации',
+            'inn': 'Введите ИНН организации (12 цифр)',
+        }
+
+        error_messages = {
+            'name': {
+                'required': 'Пожалуйста, укажите название организации',
+                'max_length': 'Название не должно превышать 200 символов'
+            },
+            'inn': {
+                'required': 'Пожалуйста, укажите ИНН',
+                'max_length': 'ИНН должен содержать ровно 12 цифр',
+                'min_length': 'ИНН должен содержать ровно 12 цифр'
+            }
+        }
+
+    def clean_inn(self):
+        inn = self.cleaned_data['inn']
+        if not inn.isdigit():
+            raise forms.ValidationError("ИНН должен содержать только цифры")
+        if len(inn) != 12:
+            raise forms.ValidationError("ИНН должен содержать ровно 12 цифр")
+        return inn
+
 
 class Position(models.Model):
     """
@@ -71,11 +108,8 @@ class Contract(models.Model):
     number = models.CharField(max_length=50, verbose_name="Номер")
     date_start = models.DateField(verbose_name="Дата начала")
     date_end = models.DateField(verbose_name="Дата окончания")
-    contract_type = models.ForeignKey(
+    contract_type = models.CharField(
         ContractType,
-        on_delete=models.CASCADE,
-        related_name='contracts',
-        verbose_name="Тип контракта",
         max_length=100,
         default='Доходный договор'  # Замените на подходящее значение
     )
@@ -105,3 +139,10 @@ class File(models.Model):
     def __str__(self):
         return self.file.name
 
+
+class Meta:
+    verbose_name = "Организация"
+    verbose_name_plural = "Организации"
+    ordering = ['-registration_date']
+    def __str__(self):
+        return self.name

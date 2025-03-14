@@ -11,55 +11,55 @@ def home(request):
 # Views для ContractType
 class ContractTypeListView(ListView):
     model = ContractType
-    template_name = 'main/templates/contracttype_list.html'
+    template_name = 'contracttype/contracttype-list.html'
     context_object_name = 'contracttypes'
 
 class ContractTypeDetailView(DetailView):
     model = ContractType
-    template_name = 'main/templates/contracttype_detail.html'
+    template_name = 'contracttype/contracttype-detail.html'
 
 class ContractTypeCreateView(CreateView):
     model = ContractType
     form_class = ContractTypeForm
-    template_name = 'main/templates/contracttype_form.html'
+    template_name = 'contracttype/contracttype-form.html'
     success_url = reverse_lazy('contracttype-list')
 
 class ContractTypeUpdateView(UpdateView):
     model = ContractType
     form_class = ContractTypeForm
-    template_name = 'main/templates/contracttype_form.html'
+    template_name = 'contracttype/contracttype-form.html'
     success_url = reverse_lazy('contracttype-list')
 
 class ContractTypeDeleteView(DeleteView):
     model = ContractType
-    template_name = 'main/templates/contracttype_confirm_delete.html'
+    template_name = 'contracttype/contracttype-confirm_delete.html'
     success_url = reverse_lazy('contracttype-list')
 
 # Views для Organization
 class OrganizationListView(ListView):
     model = Organization
-    template_name = 'main/templates/organization_list.html'
+    template_name = 'organization/organization-list.html'
     context_object_name = 'organizations'
 
 class OrganizationDetailView(DetailView):
     model = Organization
-    template_name = 'main/templates/organization_detail.html'
+    template_name = 'organization/organization-detail.html'
 
 class OrganizationCreateView(CreateView):
     model = Organization
     form_class = OrganizationForm
-    template_name = 'main/templates/organization_form.html'
+    template_name = 'organization/organization-create.html'
     success_url = reverse_lazy('organization-list')
 
 class OrganizationUpdateView(UpdateView):
     model = Organization
     form_class = OrganizationForm
-    template_name = 'main/templates/organization_form.html'
+    template_name = 'organization/organization-update.html'
     success_url = reverse_lazy('organization-list')
 
 class OrganizationDeleteView(DeleteView):
     model = Organization
-    template_name = 'main/templates/organization_confirm_delete.html'
+    template_name = 'organization/organization-delete.html'
     success_url = reverse_lazy('organization-list')
 
 # Views для Contract
@@ -104,3 +104,9 @@ def upload_file(request, contract_id):
     else:
         form = FileForm()
     return render(request, 'main/file_form.html', {'form': form})
+
+def contract_view(request):
+    return render(request, 'contracttype/contracttype-list.html')
+
+def organization_view(request):
+    return render(request, 'organization/organization-list.html')
