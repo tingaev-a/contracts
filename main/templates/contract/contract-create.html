@@ -1,0 +1,44 @@
+{% extends 'contract/contract-base.html' %}
+
+{% block contract_content %}
+<h2>Создание нового договора</h2>
+
+<form method="post" class="mt-4">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="id_number" class="form-label">Номер договора</label>
+    <input type="text" class="form-control" id="id_number" name="number" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="id_contract_type" class="form-label">Тип договора</label>
+    <select class="form-select" id="id_contract_type" name="contract_type" required>
+      {% for type in contract_types %}
+      <option value="{{ type }}">{{ type }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="id_organization" class="form-label">Организация</label>
+    <select class="form-select" id="id_organization" name="organization" required>
+      {% for org in organizations %}
+      <option value="{{ org.pk }}">{{ org }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="id_date_start" class="form-label">Дата начала</label>
+    <input type="date" class="form-control" id="id_date_start" name="date_start" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="id_date_end" class="form-label">Дата окончания</label>
+    <input type="date" class="form-control" id="id_date_end" name="date_end" required>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Создать договор</button>
+  <a href="{% url 'contract-list' %}" class="btn btn-secondary">Отмена</a>
+</form>
+{% endblock %}
