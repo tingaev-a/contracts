@@ -27,11 +27,9 @@ class User(AbstractUser):
     )
 
 class ContractType(models.Model):
-    """
-    Типы контрактов
-    """
-    name = models.CharField(max_length=100, verbose_name="Название")
-    description = models.TextField(verbose_name="Описание")
+    name = models.CharField(max_length=255, verbose_name="Название типа договора")
+    description = models.TextField(blank=True, null=True, verbose_name="Описание")
+    is_active = models.BooleanField(default=True, verbose_name="Активен")
 
     def __str__(self):
         return self.name
@@ -145,4 +143,4 @@ class Meta:
     verbose_name_plural = "Организации"
     ordering = ['-registration_date']
     def __str__(self):
-        return self.name
+        return self.verbose_namename

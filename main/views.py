@@ -4,6 +4,8 @@ from django.urls import reverse_lazy
 from .models import ContractType, Organization, Position, Contract, File
 from .forms import ContractForm, OrganizationForm, PositionForm, FileForm, ContractTypeForm
 
+
+
 # Главная страница
 def home(request):
     return render(request, 'home.html', {'title': 'Главная'})
@@ -11,29 +13,30 @@ def home(request):
 # Views для ContractType
 class ContractTypeListView(ListView):
     model = ContractType
-    template_name = 'contracttype/contracttype-list.html'
-    context_object_name = 'contracttypes'
+    template_name = 'contract-type/contract-type-list.html'
+    context_object_name = 'contract_types'
 
 class ContractTypeDetailView(DetailView):
     model = ContractType
-    template_name = 'contracttype/contracttype-detail.html'
+    template_name = 'contract-type/contract-type-detail.html'
+    context_object_name = 'contract_type'
 
 class ContractTypeCreateView(CreateView):
     model = ContractType
-    form_class = ContractTypeForm
-    template_name = 'contracttype/contracttype-form.html'
-    success_url = reverse_lazy('contracttype-list')
+    template_name = 'contract-type/contract-type-create.html'
+    fields = ['name', 'description', 'is_active']
+    success_url = reverse_lazy('contract-type-list')
 
 class ContractTypeUpdateView(UpdateView):
     model = ContractType
-    form_class = ContractTypeForm
-    template_name = 'contracttype/contracttype-form.html'
-    success_url = reverse_lazy('contracttype-list')
+    template_name = 'contract-type/contract-type-update.html'
+    fields = ['name', 'description', 'is_active']
+    success_url = reverse_lazy('contract-type-list')
 
 class ContractTypeDeleteView(DeleteView):
     model = ContractType
-    template_name = 'contracttype/contracttype-confirm_delete.html'
-    success_url = reverse_lazy('contracttype-list')
+    template_name = 'contract-type/contract-type-delete.html'
+    success_url = reverse_lazy('contract-type-list')
 
 # Views для Organization
 class OrganizationListView(ListView):
