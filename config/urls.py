@@ -17,6 +17,8 @@ Including another URLconf
 # urls.py основного приложения
 from django.urls import path
 from main import views
+from main.views import ContractTypeView
+
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -43,4 +45,9 @@ urlpatterns = [
     path('contract/create/', views.ContractCreateView.as_view(), name='contract-create'),
     path('contract/<int:pk>/update/', views.ContractUpdateView.as_view(), name='contract-update'),
     path('contract/<int:pk>/delete/', views.ContractDeleteView.as_view(), name='contract-delete'),
+
+
+    # Другие URL
+    path('get-contract-types/', ContractTypeView, name='get-contract-types'),
+
 ]

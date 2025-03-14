@@ -1,9 +1,13 @@
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from .models import ContractType, Organization, Position, Contract, File
-from .forms import ContractForm, OrganizationForm, PositionForm, FileForm, ContractTypeForm
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import View
 
+from .forms import OrganizationForm, FileForm
+from .models import Contract
+from .models import ContractType, Organization
 
 
 # Главная страница
@@ -38,6 +42,31 @@ class ContractTypeDeleteView(DeleteView):
     template_name = 'contract-type/contract-type-delete.html'
     success_url = reverse_lazy('contract-type-list')
 
+class ContractTypeView(View):
+    def get(self, request):
+        try:
+            # Получаем уникальные типы договоров
+            types = Contract.objects.values('contract_type').distinct()
+
+            # Проверяем, есть ли хотя бы один тип
+            if not types.exists():
+                return JsonResponse({'error': 'Типы договоров не найдены'}, status=404)
+
+            # Форматируем ответ в более удобном виде
+            formatted_types = [
+                {'id': i, 'type': type['contract_type']}
+                for i, type in enumerate(types, start=1)
+            ]
+
+            return JsonResponse({'types': formatted_types}, safe=False)
+
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': 'Типы договоров не найдены'}, status=404)
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+
 # Views для Organization
 class OrganizationListView(ListView):
     model = Organization
@@ -68,28 +97,29 @@ class OrganizationDeleteView(DeleteView):
 # Views для Contract
 class ContractListView(ListView):
     model = Contract
-    template_name = 'main/templates/contract_list.html'
+    template_name = 'contract/contract-list.html'
     context_object_name = 'contracts'
 
 class ContractDetailView(DetailView):
     model = Contract
-    template_name = 'main/templates/contract_detail.html'
+    template_name = 'contract/contract-detail.html'
+    context_object_name = 'contract'
 
 class ContractCreateView(CreateView):
     model = Contract
-    form_class = ContractForm
-    template_name = 'main/templates/contract_form.html'
+    template_name = 'contract/contract-create.html'
+    fields = '__all__'  # или перечислить конкретные поля
     success_url = reverse_lazy('contract-list')
 
 class ContractUpdateView(UpdateView):
     model = Contract
-    form_class = ContractForm
-    template_name = 'main/templates/contract_form.html'
+    template_name = 'contract/contract-update.html'
+    fields = '__all__'  # или перечислить конкретные поля
     success_url = reverse_lazy('contract-list')
 
 class ContractDeleteView(DeleteView):
     model = Contract
-    template_name = 'main/templates/contract_confirm_delete.html'
+    template_name = 'contract/contract-delete.html'
     success_url = reverse_lazy('contract-list')
 
 # Аналогичные views для Position, Contract и File
