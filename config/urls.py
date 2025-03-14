@@ -22,11 +22,13 @@ urlpatterns = [
     path('', views.home, name='home'),
 
     # ContractType
-    path('contracttype/', views.ContractTypeListView.as_view(), name='contracttype-list'),
-    path('contracttype/<int:pk>/', views.ContractTypeDetailView.as_view(), name='contracttype-detail'),
-    path('contracttype/create/', views.ContractTypeCreateView.as_view(), name='contracttype-create'),
-    path('contracttype/<int:pk>/update/', views.ContractTypeUpdateView.as_view(), name='contracttype-update'),
-    path('contracttype/<int:pk>/delete/', views.ContractTypeDeleteView.as_view(), name='contracttype-delete'),
+    path('contract-type/', views.ContractTypeListView.as_view(), name='contract-type-list'),
+    path('contract-type/<int:pk>/', views.ContractTypeDetailView.as_view(), name='contract-type-detail'),
+    path('contract-type/create/', views.ContractTypeCreateView.as_view(), name='contract-type-create'),
+    path('contract-type/<int:pk>/update/', views.ContractTypeUpdateView.as_view(), name='contract-type-update'),
+    path('contract-type/<int:pk>/delete/', views.ContractTypeDeleteView.as_view(), name='contract-type-delete'),
+
+
 
     # Organization
     path('organization/', views.OrganizationListView.as_view(), name='organization-list'),
