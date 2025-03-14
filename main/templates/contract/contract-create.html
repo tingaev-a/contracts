@@ -48,17 +48,17 @@
     const contractTypeSelect = document.getElementById('id_contract_type');
 
     fetch('{% url 'contract-types-api' %}')
-      .then(response => response.json())
-      .then(data => {
-      contractTypeSelect.innerHTML = '';
+    .then(response => response.json())
+    .then(data => {
+    contractTypeSelect.innerHTML = '';
 
-      data.forEach(type => {
-        const option = document.createElement('option');
-        option.value = type.value;
-        option.text = type.text;
-        contractTypeSelect.appendChild(option);
-      });
+    data.types.forEach(type => {
+      const option = document.createElement('option');
+      option.value = type.id;
+      option.text = type.name;
+      contractTypeSelect.appendChild(option);
     });
+  });
   });
 </script>
 {% endblock %}
