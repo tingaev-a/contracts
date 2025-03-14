@@ -55,6 +55,7 @@ class ContractForm(ModelForm):
             'organization': forms.Select(attrs={'class': 'form-control'})
         }
 
+
 # Форма для File
 class FileForm(ModelForm):
     class Meta:

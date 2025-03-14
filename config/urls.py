@@ -17,7 +17,7 @@ Including another URLconf
 # urls.py основного приложения
 from django.urls import path
 from main import views
-from main.views import ContractTypeAPIView
+from main.views import ContractTypeAPIView, OrganizationAPIView
 
 
 urlpatterns = [
@@ -51,5 +51,6 @@ urlpatterns = [
 
     # Новый API endpoint
     path('api/v1/contract-types/', ContractTypeAPIView.as_view(), name='contract-types-api'), # API-эндпоинт для типов контрактов
+    path('api/v1/organizations/', OrganizationAPIView.as_view(), name='organizations-api'), # API-эндпоинт для организаций
 
 ]

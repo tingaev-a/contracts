@@ -23,9 +23,7 @@
   <div class="mb-3">
     <label for="id_organization" class="form-label">Организация</label>
     <select class="form-select" id="id_organization" name="organization" required>
-      {% for org in organizations %}
-      <option value="{{ org.pk }}">{{ org }}</option>
-      {% endfor %}
+      <!-- Опции будут добавлены через JavaScript -->
     </select>
   </div>
 
@@ -61,4 +59,28 @@
   });
   });
 </script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const organizationSelect = document.getElementById('id_organization');
+
+    fetch('{% url 'organizations-api' %}')
+    .then(response => response.json())
+    .then(data => {
+    organizationSelect.innerHTML = '';
+
+    data.organizations.forEach(org => {
+      const option = document.createElement('option');
+      option.value = org.id;
+      option.text = org.name;
+      organizationSelect.appendChild(option);
+    });
+  });
+  });
+  </script>
+
+
+
+
+
 {% endblock %}

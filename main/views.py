@@ -101,6 +101,24 @@ class OrganizationDeleteView(DeleteView):
     template_name = 'organization/organization-delete.html'
     success_url = reverse_lazy('organization-list')
 
+class OrganizationAPIView(APIView):
+    def get(self, request):
+        try:
+            organizations = Organization.objects.all()
+
+            # Форматируем ответ
+            formatted_organizations = [
+                {'id': org.id, 'name': org.name}
+                for org in organizations
+            ]
+
+            return Response({'organizations': formatted_organizations})
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=500)
+
+
+
 # Views для Contract
 class ContractListView(ListView):
     model = Contract
