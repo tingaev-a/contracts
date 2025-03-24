@@ -1,0 +1,26 @@
+<!-- contract-update.html -->
+{% extends 'contract/contract-type-base.html' %}
+
+{% block title %}Редактирование типа договора - {{ contract_type.name }}{% endblock %}
+
+{% block contract_type_content %}
+<h1>Редактирование типа договора</h1>
+
+<form method="post">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="name" class="form-label">Название</label>
+    <input type="text" class="form-control" id="name" name="name" value="{{ contract_type.name }}" required>
+  </div>
+  <div class="mb-3">
+    <label for="description" class="form-label">Описание</label>
+    <textarea class="form-control" id="description" name="description">{{ contract_type.description }}</textarea>
+  </div>
+  <div class="mb-3 form-check">
+    <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if contract_type.is_active %}checked{% endif %}>
+    <label class="form-check-label" for="is_active">Активен</label>
+  </div>
+  <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+  <a href="{% url 'contract-type-detail' contract_type.id %}" class="btn btn-secondary">Отмена</a>
+</form>
+{% endblock %}

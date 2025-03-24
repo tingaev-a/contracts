@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Система организаций{% endblock %}
+
+{% block content %}
+{% block organization_content %}{% endblock %}
+{% endblock %}
+
+{% block navbar %}
+{{ block.super }}
+<ul class="navbar-nav">
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'organization-list' %}">Организации</a>
+  </li>
+</ul>
+{% endblock %}

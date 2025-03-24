@@ -1,0 +1,24 @@
+{% extends 'contract/contract-base.html' %}
+
+{% block contract_content %}
+<h2>Детали договора</h2>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Номер договора: {{ contract.number }}</h5>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"><strong>Тип договора:</strong> {{ contract.contract_type }}</li>
+            <li class="list-group-item"><strong>Организация:</strong> {{ contract.organization }}</li>
+            <li class="list-group-item"><strong>Дата начала:</strong> {{ contract.date_start }}</li>
+            <li class="list-group-item"><strong>Дата окончания:</strong> {{ contract.date_end }}</li>
+            <li class="list-group-item"><strong>Предмет договора:</strong> {{ contract.subject }}</li>
+        </ul>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="{% url 'contract-update' pk=contract.pk %}" class="btn btn-primary">Редактировать</a>
+    <a href="{% url 'contract-delete' pk=contract.pk %}" class="btn btn-danger">Удалить</a>
+    <a href="{% url 'contract-list' %}" class="btn btn-secondary">Вернуться к списку</a>
+</div>
+{% endblock %}

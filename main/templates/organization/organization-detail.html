@@ -1,0 +1,26 @@
+{% extends 'organization/organization-base.html' %}
+
+{% block title %}Организация - {{ organization.name }}{% endblock %}
+
+{% block organization_content %}
+<div class="card">
+    <div class="card-body">
+        <h1>{{ organization.name }}</h1>
+
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <strong>ИНН:</strong> {{ organization.inn }}
+            </li>
+            <!-- Здесь можно добавить другие поля организации -->
+        </ul>
+
+        <div class="d-flex justify-content-between mt-3">
+            <a href="{% url 'organization-list' %}" class="btn btn-secondary">Назад к списку</a>
+            <div>
+                <a href="{% url 'organization-update' organization.id %}" class="btn btn-primary">Редактировать</a>
+                <a href="{% url 'organization-delete' organization.id %}" class="btn btn-danger">Удалить</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

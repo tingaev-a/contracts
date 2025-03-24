@@ -1,0 +1,34 @@
+<!-- contract-detail.html -->
+{% extends 'contract-type/contract-type-base.html' %}
+
+{% block title %}Тип договора - {{ contract_type.name }}{% endblock %}
+
+{% block contract_type_content %}
+<div class="card">
+    <div class="card-body">
+        <h1>{{ contract_type.name }}</h1>
+
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <strong>Описание:</strong> {{ contract_type.description }}
+            </li>
+            <li class="list-group-item">
+                <strong>Статус:</strong>
+                {% if contract_type.is_active %}
+                <span class="badge bg-success">Активен</span>
+                {% else %}
+                <span class="badge bg-secondary">Неактивен</span>
+                {% endif %}
+            </li>
+        </ul>
+
+        <div class="d-flex justify-content-between mt-3">
+            <a href="{% url 'contract-type-list' %}" class="btn btn-secondary">Назад к списку</a>
+            <div>
+                <a href="{% url 'contract-type-update' contract_type.id %}" class="btn btn-primary">Редактировать</a>
+                <a href="{% url 'contract-type-delete' contract_type.id %}" class="btn btn-danger">Удалить</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

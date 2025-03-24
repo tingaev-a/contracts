@@ -1,8 +1,16 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from .models import ContractType, Organization, Position, Contract, File
-from .forms import ContractForm, OrganizationForm, PositionForm, FileForm, ContractTypeForm
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from .forms import ContractForm
+from .forms import OrganizationForm, FileForm
+from .models import Contract
+from .models import ContractType, Organization
+
 
 # Главная страница
 def home(request):
@@ -11,82 +19,146 @@ def home(request):
 # Views для ContractType
 class ContractTypeListView(ListView):
     model = ContractType
-    template_name = 'main/templates/contracttype_list.html'
-    context_object_name = 'contracttypes'
+    template_name = 'contract-type/contract-type-list.html'
+    context_object_name = 'contract_types'
 
 class ContractTypeDetailView(DetailView):
     model = ContractType
-    template_name = 'main/templates/contracttype_detail.html'
+    template_name = 'contract-type/contract-type-detail.html'
+    context_object_name = 'contract_type'
 
 class ContractTypeCreateView(CreateView):
     model = ContractType
-    form_class = ContractTypeForm
-    template_name = 'main/templates/contracttype_form.html'
-    success_url = reverse_lazy('contracttype-list')
+    template_name = 'contract-type/contract-type-create.html'
+    fields = ['name', 'description', 'is_active']
+    success_url = reverse_lazy('contract-type-list')
 
 class ContractTypeUpdateView(UpdateView):
     model = ContractType
-    form_class = ContractTypeForm
-    template_name = 'main/templates/contracttype_form.html'
-    success_url = reverse_lazy('contracttype-list')
+    template_name = 'contract-type/contract-type-update.html'
+    fields = ['name', 'description', 'is_active']
+    success_url = reverse_lazy('contract-type-list')
 
 class ContractTypeDeleteView(DeleteView):
     model = ContractType
-    template_name = 'main/templates/contracttype_confirm_delete.html'
-    success_url = reverse_lazy('contracttype-list')
+    template_name = 'contract-type/contract-type-delete.html'
+    success_url = reverse_lazy('contract-type-list')
+
+class ContractTypeAPIView(APIView):
+    def get(self, request):
+        try:
+            # Получаем все активные типы договоров
+            types = ContractType.objects.filter(is_active=True)
+
+            # Форматируем ответ
+            formatted_types = [
+                {'id': type.id, 'name': type.name}
+                for type in types
+            ]
+
+            return Response({'types': formatted_types})
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=500)
+
+    def contract_create_view(request):
+        if request.method == 'POST':
+            form = ContractForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('contract-list')
+        else:
+            form = ContractForm()
+
+        contract_types = ContractType.objects.filter(is_active=True)
+
+        return render(request, 'contract-create.html', {
+            'form': form,
+            'contract_types': contract_types
+        })
 
 # Views для Organization
 class OrganizationListView(ListView):
     model = Organization
-    template_name = 'main/templates/organization_list.html'
+    template_name = 'organization/organization-list.html'
     context_object_name = 'organizations'
 
 class OrganizationDetailView(DetailView):
     model = Organization
-    template_name = 'main/templates/organization_detail.html'
+    template_name = 'organization/organization-detail.html'
 
 class OrganizationCreateView(CreateView):
     model = Organization
     form_class = OrganizationForm
-    template_name = 'main/templates/organization_form.html'
+    template_name = 'organization/organization-create.html'
     success_url = reverse_lazy('organization-list')
 
 class OrganizationUpdateView(UpdateView):
     model = Organization
     form_class = OrganizationForm
-    template_name = 'main/templates/organization_form.html'
+    template_name = 'organization/organization-update.html'
     success_url = reverse_lazy('organization-list')
 
 class OrganizationDeleteView(DeleteView):
     model = Organization
-    template_name = 'main/templates/organization_confirm_delete.html'
+    template_name = 'organization/organization-delete.html'
     success_url = reverse_lazy('organization-list')
+
+class OrganizationAPIView(APIView):
+    def get(self, request):
+        try:
+            organizations = Organization.objects.all()
+
+            # Форматируем ответ
+            formatted_organizations = [
+                {'id': org.id, 'name': org.name}
+                for org in organizations
+            ]
+
+            return Response({'organizations': formatted_organizations})
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=500)
+
+
 
 # Views для Contract
 class ContractListView(ListView):
     model = Contract
-    template_name = 'main/templates/contract_list.html'
+    template_name = 'contract/contract-list.html'
     context_object_name = 'contracts'
 
 class ContractDetailView(DetailView):
     model = Contract
-    template_name = 'main/templates/contract_detail.html'
+    template_name = 'contract/contract-detail.html'
+    context_object_name = 'contract'
 
 class ContractCreateView(CreateView):
     model = Contract
     form_class = ContractForm
-    template_name = 'main/templates/contract_form.html'
+    template_name = 'contract/contract-create.html'
     success_url = reverse_lazy('contract-list')
+
+    def contract_create(request):
+        if request.method == 'POST':
+            form = ContractForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return HttpResponseRedirect('/contracts/')
+        else:
+            form = ContractForm()
+        return render(request, 'contracts/contract_form.html', {'form': form})
+
 
 class ContractUpdateView(UpdateView):
     model = Contract
-    form_class = ContractForm
-    template_name = 'main/templates/contract_form.html'
+    template_name = 'contract/contract-update.html'
+    fields = 'number', 'subject','date_start', 'date_end', 'organization', 'contract_type'   # или перечислить конкретные поля
     success_url = reverse_lazy('contract-list')
 
 class ContractDeleteView(DeleteView):
     model = Contract
-    template_name = 'main/templates/contract_confirm_delete.html'
+    template_name = 'contract/contract-delete.html'
     success_url = reverse_lazy('contract-list')
 
 # Аналогичные views для Position, Contract и File
@@ -104,3 +176,34 @@ def upload_file(request, contract_id):
     else:
         form = FileForm()
     return render(request, 'main/file_form.html', {'form': form})
+
+def contract_view(request):
+    return render(request, 'contracttype/contracttype-list.html')
+
+def organization_view(request):
+    return render(request, 'organization/organization-list.html')
+
+###
+
+def contract_list(request):
+    contracts = Contract.objects.all()
+    return render(request, 'contracts/contract_list.html', {'contracts': contracts})
+
+
+def contract_update(request, pk):
+    contract = get_object_or_404(Contract, pk=pk)
+    if request.method == 'POST':
+        form = ContractForm(request.POST, instance=contract)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/contracts/')
+    else:
+        form = ContractForm(instance=contract)
+    return render(request, 'contracts/contract_form.html', {'form': form})
+
+def contract_delete(request, pk):
+    contract = get_object_or_404(Contract, pk=pk)
+    if request.method == 'POST':
+        contract.delete()
+        return HttpResponseRedirect('/contracts/')
+    return render(request, 'contracts/contract_delete.html', {'contract': contract})

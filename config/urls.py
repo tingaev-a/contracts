@@ -17,16 +17,21 @@ Including another URLconf
 # urls.py основного приложения
 from django.urls import path
 from main import views
+from main.views import ContractTypeAPIView, OrganizationAPIView
+
 
 urlpatterns = [
     path('', views.home, name='home'),
 
     # ContractType
-    path('contracttype/', views.ContractTypeListView.as_view(), name='contracttype-list'),
-    path('contracttype/<int:pk>/', views.ContractTypeDetailView.as_view(), name='contracttype-detail'),
-    path('contracttype/create/', views.ContractTypeCreateView.as_view(), name='contracttype-create'),
-    path('contracttype/<int:pk>/update/', views.ContractTypeUpdateView.as_view(), name='contracttype-update'),
-    path('contracttype/<int:pk>/delete/', views.ContractTypeDeleteView.as_view(), name='contracttype-delete'),
+    path('contract-type/', views.ContractTypeListView.as_view(), name='contract-type-list'),
+    path('contract-type/<int:pk>/', views.ContractTypeDetailView.as_view(), name='contract-type-detail'),
+    path('contract-type/create/', views.ContractTypeCreateView.as_view(), name='contract-type-create'),
+    path('contract-type/<int:pk>/update/', views.ContractTypeUpdateView.as_view(), name='contract-type-update'),
+    path('contract-type/<int:pk>/delete/', views.ContractTypeDeleteView.as_view(), name='contract-type-delete'),
+
+
+
 
     # Organization
     path('organization/', views.OrganizationListView.as_view(), name='organization-list'),
@@ -39,6 +44,13 @@ urlpatterns = [
     path('contract/', views.ContractListView.as_view(), name='contract-list'),
     path('contract/<int:pk>/', views.ContractDetailView.as_view(), name='contract-detail'),
     path('contract/create/', views.ContractCreateView.as_view(), name='contract-create'),
+
     path('contract/<int:pk>/update/', views.ContractUpdateView.as_view(), name='contract-update'),
     path('contract/<int:pk>/delete/', views.ContractDeleteView.as_view(), name='contract-delete'),
+
+
+    # Новый API endpoint
+    path('api/v1/contract-types/', ContractTypeAPIView.as_view(), name='contract-types-api'), # API-эндпоинт для типов контрактов
+    path('api/v1/organizations/', OrganizationAPIView.as_view(), name='organizations-api'), # API-эндпоинт для организаций
+
 ]

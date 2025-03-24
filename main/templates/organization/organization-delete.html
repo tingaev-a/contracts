@@ -1,0 +1,21 @@
+{% extends 'organization/organization-base.html' %}
+
+{% block title %}Удаление организации - {{ organization.name }}{% endblock %}
+
+{% block organization_content %}
+<div class="card">
+  <div class="card-body">
+    <h1>Подтверждение удаления организации</h1>
+
+    <p class="lead">
+      Вы уверены, что хотите удалить организацию <strong>{{ organization.name }}</strong>?
+    </p>
+
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Удалить</button>
+      <a href="{% url 'organization-detail' organization.id %}" class="btn btn-secondary">Отмена</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

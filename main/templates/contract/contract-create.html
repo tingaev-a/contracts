@@ -1,0 +1,109 @@
+{% extends 'contract/contract-base.html' %}
+
+{% block contract_content %}
+<h2>Создание нового договора</h2>
+
+<form method="post" class="mt-4">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="id_number" class="form-label">Номер договора</label>
+    <input type="text" class="form-control" id="id_number" name="number" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="id_subject" class="form-label">Предмет договора</label>
+    <input type="text" class="form-control" id="id_subject" name="subject" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="id_contract_type" class="form-label">Тип договора</label>
+    <select class="form-select" id="id_contract_type" name="contract_type" required>
+      {% for type in contract_types %}
+      <option value="{{ type.id }}">{{ type.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="id_organization" class="form-label">Организация</label>
+    <select class="form-select" id="id_organization" name="organization" required>
+      <!-- Опции будут добавлены через JavaScript -->
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="id_date_start" class="form-label">Дата начала</label>
+    <input type="date" class="form-control" id="id_date_start" name="date_start" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="id_date_end" class="form-label">Дата окончания</label>
+    <input type="date" class="form-control" id="id_date_end" name="date_end" required>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Создать договор</button>
+  <a href="{% url 'contract-list' %}" class="btn btn-secondary">Отмена</a>
+</form>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const contractTypeSelect = document.getElementById('id_contract_type');
+
+    fetch('{% url 'contract-types-api' %}')
+    .then(response => {
+    if (!response.ok) {
+      throw new Error('Ошибка при получении типов договоров');
+    }
+    return response.json();
+  })
+    .then(data => {
+    contractTypeSelect.innerHTML = '';
+    data.types.forEach(type => {
+      const option = document.createElement('option');
+      option.value = type.id;
+      option.text = type.name;
+      contractTypeSelect.appendChild(option);
+    });
+  })
+    .catch(error => {
+    console.error('Ошибка:', error);
+  });
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const organizationSelect = document.getElementById('id_organization');
+
+    fetch('{% url 'organizations-api' %}')
+    .then(response => {
+    if (!response.ok) {
+      throw new Error('Ошибка при получении организаций');
+    }
+    return response.json();
+  })
+    .then(data => {
+    organizationSelect.innerHTML = '';
+    data.organizations.forEach(org => {
+      const option = document.createElement('option');
+      option.value = org.id;
+      option.text = org.name;
+      organizationSelect.appendChild(option);
+    });
+  })
+    .catch(error => {
+    console.error('Ошибка:', error);
+  });
+  });
+</script>
+
+{% if form.errors %}
+<div class="alert alert-danger">
+  {{ form.non_field_errors }}
+  {% for field in form %}
+  {{ field.errors }}
+  {% endfor %}
+</div>
+{% endif %}
+
+{% endblock %}

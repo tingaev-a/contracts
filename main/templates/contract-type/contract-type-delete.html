@@ -1,0 +1,22 @@
+<!-- contract-delete.html -->
+{% extends 'contract-type/contract-type-base.html' %}
+
+{% block title %}Удаление типа договора - {{ contract_type.name }}{% endblock %}
+
+{% block contract_type_content %}
+<div class="card">
+  <div class="card-body">
+    <h1>Подтверждение удаления</h1>
+
+    <p class="lead">
+      Вы уверены, что хотите удалить тип договора <strong>{{ contract_type.name }}</strong>?
+    </p>
+
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Удалить</button>
+      <a href="{% url 'contract-type-detail' contract_type.id %}" class="btn btn-secondary">Отмена</a>
+    </form>
+  </div>
+</div>
+{% endblock %}
