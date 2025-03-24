@@ -1,11 +1,14 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from main.models import Contract
-from .forms import OrganizationForm, FileForm, ContractForm
+from .forms import ContractForm
+from .forms import OrganizationForm, FileForm
+from .models import Contract
 from .models import ContractType, Organization
 
 
@@ -132,14 +135,25 @@ class ContractDetailView(DetailView):
 
 class ContractCreateView(CreateView):
     model = Contract
+    form_class = ContractForm
     template_name = 'contract/contract-create.html'
-    fields = '__all__'  # или перечислить конкретные поля
     success_url = reverse_lazy('contract-list')
+
+    def contract_create(request):
+        if request.method == 'POST':
+            form = ContractForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return HttpResponseRedirect('/contracts/')
+        else:
+            form = ContractForm()
+        return render(request, 'contracts/contract_form.html', {'form': form})
+
 
 class ContractUpdateView(UpdateView):
     model = Contract
     template_name = 'contract/contract-update.html'
-    fields = '__all__'  # или перечислить конкретные поля
+    fields = 'number', 'subject','date_start', 'date_end', 'organization', 'contract_type'   # или перечислить конкретные поля
     success_url = reverse_lazy('contract-list')
 
 class ContractDeleteView(DeleteView):
@@ -168,3 +182,28 @@ def contract_view(request):
 
 def organization_view(request):
     return render(request, 'organization/organization-list.html')
+
+###
+
+def contract_list(request):
+    contracts = Contract.objects.all()
+    return render(request, 'contracts/contract_list.html', {'contracts': contracts})
+
+
+def contract_update(request, pk):
+    contract = get_object_or_404(Contract, pk=pk)
+    if request.method == 'POST':
+        form = ContractForm(request.POST, instance=contract)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/contracts/')
+    else:
+        form = ContractForm(instance=contract)
+    return render(request, 'contracts/contract_form.html', {'form': form})
+
+def contract_delete(request, pk):
+    contract = get_object_or_404(Contract, pk=pk)
+    if request.method == 'POST':
+        contract.delete()
+        return HttpResponseRedirect('/contracts/')
+    return render(request, 'contracts/contract_delete.html', {'contract': contract})

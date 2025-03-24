@@ -8,9 +8,9 @@
   <thead>
   <tr>
     <th>№</th>
-    <th>Название</th>
     <th>Тип договора</th>
     <th>Организация</th>
+    <th>Название</th>
     <th>Дата заключения</th>
     <th>Действия</th>
   </tr>
@@ -19,10 +19,11 @@
   {% for contract in contracts %}
   <tr>
     <td>{{ forloop.counter }}</td>
-    <td><a href="{% url 'contract-detail' pk=contract.pk %}">{{ contract.title }}</a></td>
+    <!--<td><a href="{% url 'contract-detail' pk=contract.pk %}">{{ contract.title }}</a></td>-->
     <td>{{ contract.contract_type }}</td>
     <td>{{ contract.organization }}</td>
-    <td>{{ contract.signing_date }}</td>
+    <td>{{ contract.subject }}</td>
+    <td>{{ contract.date_start }}</td>
     <td>
       <a href="{% url 'contract-update' pk=contract.pk %}" class="btn btn-sm btn-primary">Редактировать</a>
       <a href="{% url 'contract-delete' pk=contract.pk %}" class="btn btn-sm btn-danger">Удалить</a>

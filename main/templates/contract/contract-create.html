@@ -11,6 +11,11 @@
   </div>
 
   <div class="mb-3">
+    <label for="id_subject" class="form-label">Предмет договора</label>
+    <input type="text" class="form-control" id="id_subject" name="subject" required>
+  </div>
+
+  <div class="mb-3">
     <label for="id_contract_type" class="form-label">Тип договора</label>
     <select class="form-select" id="id_contract_type" name="contract_type" required>
       {% for type in contract_types %}
@@ -18,7 +23,6 @@
       {% endfor %}
     </select>
   </div>
-
 
   <div class="mb-3">
     <label for="id_organization" class="form-label">Организация</label>
@@ -46,16 +50,23 @@
     const contractTypeSelect = document.getElementById('id_contract_type');
 
     fetch('{% url 'contract-types-api' %}')
-    .then(response => response.json())
+    .then(response => {
+    if (!response.ok) {
+      throw new Error('Ошибка при получении типов договоров');
+    }
+    return response.json();
+  })
     .then(data => {
     contractTypeSelect.innerHTML = '';
-
     data.types.forEach(type => {
       const option = document.createElement('option');
       option.value = type.id;
       option.text = type.name;
       contractTypeSelect.appendChild(option);
     });
+  })
+    .catch(error => {
+    console.error('Ошибка:', error);
   });
   });
 </script>
@@ -65,22 +76,34 @@
     const organizationSelect = document.getElementById('id_organization');
 
     fetch('{% url 'organizations-api' %}')
-    .then(response => response.json())
+    .then(response => {
+    if (!response.ok) {
+      throw new Error('Ошибка при получении организаций');
+    }
+    return response.json();
+  })
     .then(data => {
     organizationSelect.innerHTML = '';
-
     data.organizations.forEach(org => {
       const option = document.createElement('option');
       option.value = org.id;
       option.text = org.name;
       organizationSelect.appendChild(option);
     });
+  })
+    .catch(error => {
+    console.error('Ошибка:', error);
   });
   });
-  </script>
+</script>
 
-
-
-
+{% if form.errors %}
+<div class="alert alert-danger">
+  {{ form.non_field_errors }}
+  {% for field in form %}
+  {{ field.errors }}
+  {% endfor %}
+</div>
+{% endif %}
 
 {% endblock %}
