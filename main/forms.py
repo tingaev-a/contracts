@@ -2,8 +2,6 @@ from django import forms
 from django.forms import ModelForm
 from.models import ContractType, Organization, Position, Contract, File
 
-
-
 # Форма для ContractType
 class ContractTypeForm(ModelForm):
     class Meta:
